@@ -19,17 +19,17 @@ def calcular_identidad_y_huecos(secuencia1_alineada, secuencia2_alineada):
 
 def reconstruir_con_huecos(alignment, seq_a, seq_b):
     A, B = [], []
-    coords = alignment.coordinates  # shape (2, k)
+    coords = alignment.coordinates
     for j in range(coords.shape[1] - 1):
         a0, a1 = coords[0, j], coords[0, j+1]
         b0, b1 = coords[1, j], coords[1, j+1]
-        while a0 < a1 and b0 < b1:  # avance simultáneo
+        while a0 < a1 and b0 < b1:
             A.append(seq_a[a0]); B.append(seq_b[b0])
             a0 += 1; b0 += 1
-        while a0 < a1:             # huecos en B
+        while a0 < a1:
             A.append(seq_a[a0]); B.append('-')
             a0 += 1
-        while b0 < b1:             # huecos en A
+        while b0 < b1:
             A.append('-'); B.append(seq_b[b0])
             b0 += 1
     return "".join(A), "".join(B)
@@ -40,10 +40,8 @@ def formatear_bloques(alA, alB, etiqueta_arriba="Secuencia A", etiqueta_abajo="S
     while i < len(alA):
         sA = alA[i:i+ancho]
         sB = alB[i:i+ancho]
-        # línea intermedia con | para match y . para mismatch (sin contar '-')
         mid = "".join('|' if (a == b and a != '-' and b != '-') else ('.' if a != '-' and b != '-' else ' ')
                       for a,b in zip(sA,sB))
-        # posiciones (1-index) aproximadas: contamos letras reales en el tramo
         startA = off_a + sum(1 for c in alA[:i] if c != '-') + 1
         endA   = startA + sum(1 for c in sA      if c != '-') - 1
         startB = off_b + sum(1 for c in alB[:i] if c != '-') + 1
@@ -75,7 +73,6 @@ def ejecutar_alineamiento(secuencia_a, secuencia_b, descripcion, modo,
     alA, alB = reconstruir_con_huecos(mejor_alineamiento, secuencia_a, secuencia_b)
     identidad, num_coincidencias, num_huecos = calcular_identidad_y_huecos(alA, alB)
 
-    # offsets de inicio dentro de las secuencias originales (para modo local)
     a_ini = mejor_alineamiento.aligned[0][0][0] if mejor_alineamiento.aligned[0].size else 0
     b_ini = mejor_alineamiento.aligned[1][0][0] if mejor_alineamiento.aligned[1].size else 0
 
