@@ -82,12 +82,10 @@ def cargar_matriz(nombre_o_path: Optional[str]):
     except Exception:
         pass
 
-    # Intentar cargar desde fichero de texto
     path = Path(nombre_o_path)
     if not path.exists():
         raise FileNotFoundError(f"No se encuentra la matriz: {nombre_o_path}")
 
-    # Parser simple de matriz cuadrada con cabeceras
     with path.open() as fh:
         rows = [line.strip() for line in fh if line.strip() and not line.strip().startswith("#")]
     header = rows[0].split()
@@ -108,10 +106,6 @@ def cargar_matriz(nombre_o_path: Optional[str]):
             mat[(a, b)] = arr[i][j]
     return mat
 
-
-# -----------------------------
-# Alineamiento
-# -----------------------------
 def ejecutar_alineamiento(
     secuencia_a: str,
     secuencia_b: str,
@@ -125,11 +119,9 @@ def ejecutar_alineamiento(
     etiqueta_abajo="Proteína B",
 ):
     alineador = PairwiseAligner()
-    alineador.mode = modo  # "global" o "local"
-    # Matriz de sustitución
+    alineador.mode = modo
     subm = cargar_matriz(matriz)
     alineador.substitution_matrix = subm
-    # Penalizaciones de hueco
     if gap_lineal is not None:
         alineador.open_gap_score = gap_lineal
         alineador.extend_gap_score = gap_lineal
@@ -137,7 +129,6 @@ def ejecutar_alineamiento(
         alineador.open_gap_score = open_gap
         alineador.extend_gap_score = ext_gap
 
-    # Alineamos
     mejor = alineador.align(secuencia_a, secuencia_b)[0]
     alA, alB = reconstruir_con_huecos(mejor, secuencia_a, secuencia_b)
     identidad, nmatch, ngaps = calcular_identidad_y_huecos(alA, alB)
@@ -186,10 +177,6 @@ def comparar_matrices(secuencia_a: str, secuencia_b: str, titulo: str,
             etiqueta_abajo="Proteína B",
         )
 
-
-# -----------------------------
-# Entrada / salida
-# -----------------------------
 def leer_secuencia_fasta(ruta_fichero: Path) -> str:
     registro = next(SeqIO.parse(str(ruta_fichero), "fasta"))
     seq = str(registro.seq)
