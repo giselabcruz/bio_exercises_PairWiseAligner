@@ -4,7 +4,7 @@ from pathlib import Path
 from Bio import SeqIO
 from Bio.Align import PairwiseAligner
 
-BASES_ADN = "ACGT"
+BASES_ADN = "mouse_actb.fasta"
 random.seed(42)
 
 def generar_adn_aleatorio(longitud):
@@ -124,18 +124,18 @@ def main():
 
     if args.fasta:
         fasta1, fasta2 = map(Path, args.fasta)
-        secuencia_a, secuencia_b = leer_secuencia_fasta(fasta1), leer_secuencia_fasta(fasta2)
-        print("\nArchivos FASTA cargados correctamente:")
-        print(f" - {fasta1.name} (longitud: {len(secuencia_a)})")
-        print(f" - {fasta2.name} (longitud: {len(secuencia_b)})")
-        comparar_alineamientos(secuencia_a, secuencia_b, titulo="(b) Secuencias obtenidas de bases de datos")
     else:
-        secuencia_a = generar_adn_aleatorio(args.lenA)
-        secuencia_b = generar_adn_aleatorio(args.lenB)
-        print("\nSecuencias aleatorias generadas:")
-        print(f" - Secuencia A (longitud {len(secuencia_a)}): {secuencia_a}")
-        print(f" - Secuencia B (longitud {len(secuencia_b)}): {secuencia_b}")
-        comparar_alineamientos(secuencia_a, secuencia_b, titulo="(a) Secuencias aleatorias")
+        fasta1 = Path("./fasta/mouse_actb.fasta")
+        fasta2 = Path("./fasta/lizard_actb.fasta")
+
+    secuencia_a = leer_secuencia_fasta(fasta1)
+    secuencia_b = leer_secuencia_fasta(fasta2)
+
+    print("\nArchivos FASTA cargados correctamente:")
+    print(f" - {fasta1.name} (longitud: {len(secuencia_a)})")
+    print(f" - {fasta2.name} (longitud: {len(secuencia_b)})")
+
+    comparar_alineamientos(secuencia_a, secuencia_b, titulo="(b) Secuencias obtenidas de bases de datos")
 
 if __name__ == "__main__":
     main()
